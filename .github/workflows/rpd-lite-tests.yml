@@ -3,10 +3,10 @@ name: rpd_lite tests (no GPU)
 on:
   push:
     branches: [rpd_lite]
-    paths: ['rpd_lite/**']
+    paths: ['rpd_lite/**', '.github/workflows/rpd-lite-tests.yml']
   pull_request:
     branches: [rpd_lite, master]
-    paths: ['rpd_lite/**']
+    paths: ['rpd_lite/**', '.github/workflows/rpd-lite-tests.yml']
 
 jobs:
   source-guard:

@@ -1,0 +1,77 @@
+name: rpd_lite tests (no GPU)
+
+on:
+  push:
+    branches: [rpd_lite]
+    paths: ['rpd_lite/**']
+  pull_request:
+    branches: [rpd_lite, master]
+    paths: ['rpd_lite/**']
+
+jobs:
+  source-guard:
+    name: Source dependency guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: T1.2 — No roctracer/rocprofiler-sdk in source
+        run: |
+          echo "Checking for forbidden includes..."
+          if grep -rn 'roctracer\|rocprofiler-sdk' rpd_lite/*.cpp rpd_lite/*.h; then
+            echo "FAIL: Found roctracer/rocprofiler-sdk references"
+            exit 1
+          fi
+          echo "PASS: No forbidden dependencies"
+
+      - name: T1.2c — No forbidden linker flags in Makefile
+        run: |
+          if grep -E '\-lroctracer|\-lrocprofiler-sdk|\-lroctx64' rpd_lite/Makefile; then
+            echo "FAIL: Makefile links forbidden libraries"
+            exit 1
+          fi
+          echo "PASS: Makefile clean"
+
+      - name: Verify all expected files exist
+        run: |
+          for f in rpd_lite.h rpd_lite.cpp hsa_intercept.cpp roctx_shim.cpp \
+                   hip_intercept.cpp Makefile rpd_lite.sh rpd2trace.py; do
+            test -f rpd_lite/$f || { echo "MISSING: $f"; exit 1; }
+          done
+          echo "PASS: All files present"
+
+  python-tests:
+    name: Python tests (schema, converter, roctx)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run tests
+        working-directory: rpd_lite/tests
+        run: pytest -v --tb=short
+
+  lint:
+    name: Lint Python files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint rpd2trace.py
+        run: ruff check rpd_lite/rpd2trace.py rpd_lite/tests/ --select=E,F,W
+
+      - name: Check rpd_lite.sh syntax
+        run: bash -n rpd_lite/rpd_lite.sh

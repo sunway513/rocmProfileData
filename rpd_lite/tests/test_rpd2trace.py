@@ -8,7 +8,6 @@ import os
 import sqlite3
 import subprocess
 import sys
-import pytest
 from conftest import SCHEMA_SQL, populate_synthetic_trace
 
 RPD2TRACE = os.path.join(

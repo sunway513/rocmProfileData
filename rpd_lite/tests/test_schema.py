@@ -4,7 +4,6 @@ Tests RPD database schema, record writing, and query correctness
 using synthetic data. No GPU needed.
 """
 import sqlite3
-import pytest
 from conftest import SCHEMA_SQL, REQUIRED_TABLES, REQUIRED_VIEWS, populate_synthetic_trace
 
 

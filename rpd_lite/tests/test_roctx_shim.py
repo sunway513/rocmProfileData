@@ -7,7 +7,6 @@ these tests validate the expected recording patterns using synthetic data.
 For actual C-level roctx shim tests, see test_roctx_native (requires build).
 """
 import sqlite3
-import pytest
 from conftest import SCHEMA_SQL
 
 

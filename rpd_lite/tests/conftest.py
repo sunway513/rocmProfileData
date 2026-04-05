@@ -1,7 +1,6 @@
 """Shared fixtures for rpd_lite tests."""
 import os
 import sqlite3
-import tempfile
 import pytest
 
 RPDB_LITE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +22,6 @@ def tmp_rpd(tmp_path):
 @pytest.fixture
 def empty_rpd(tmp_rpd):
     """Create an empty RPD database with the correct schema."""
-    import importlib.util
     # Load rpd2trace to get the schema indirectly, or just create it manually
     conn = sqlite3.connect(tmp_rpd)
     conn.executescript(SCHEMA_SQL)

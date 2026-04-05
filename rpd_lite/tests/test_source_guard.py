@@ -5,7 +5,6 @@ These tests run without any build or GPU — pure file inspection.
 """
 import os
 import re
-import pytest
 
 RPDB_LITE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_FILES = []
